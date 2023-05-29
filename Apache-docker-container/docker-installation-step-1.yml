@@ -1,0 +1,55 @@
+---
+ - name: Docker server installation
+   hosts: all
+   become: True
+   vars: 
+     packages_rm:
+       - docker
+       - docker-client
+       - docker-client-latest
+       - docker-common
+       - docker-latest
+       - docker-latest-logrotate
+       - docker-logrotate
+       - docker-engine
+     packages_inst:
+       - python3
+       - device-mapper-persistent-data
+       - docker-ce
+       - docker-ce-cli
+       - containerd.io
+       - docker-buildx-plugin
+       - docker-compose-plugin
+       - python-docker-py
+   tasks:
+     - name: Cleanup task - remove old packages
+       ansible.builtin.yum:
+         name: "{{ packages_rm }}"
+         state: absent
+     - name: installation of yum-utils to mange yum config
+       ansible.builtin.yum:
+         name: yum-utils
+         state: latest
+     - name: Repo initialazation for yum config mange
+       ansible.builtin.command: sudo yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
+     - name: installation of docker
+       ansible.builtin.yum:
+         name:  "{{ packages_inst }}"
+         state: latest
+     - name: Adding user to docker group
+       ansible.builtin.shell: sudo usermod -aG docker $(whoami)
+
+     - name: Install python dependency for docker
+       command: "pip3 install docker-py" 
+
+       notify:
+         - start-docker
+   
+   handlers:
+    - name: start-docker
+      service: 
+        name: docker
+        state: started
+
+
+

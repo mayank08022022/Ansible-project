@@ -1,0 +1,32 @@
+---
+ - name: Custmizing images on pulled container
+   hosts: all
+   become: True
+   tasks:
+     - name: Copy requied file for Custmization to docker server
+       ansible.builtin.copy: 
+         src: Dockerfile
+         dest: /home/mayank/build
+         owner: mayank
+         group: mayank
+        
+     - name: Copy index file to web dir
+       ansible.builtin.copy:
+         src: index.html
+         dest: /home/mayank/build
+         owner: mayank
+         group: mayank
+         mode: 0644
+
+     - name: shell script placement
+       ansible.builtin.copy:
+         src: run.sh
+         dest: /home/mayank/build
+         owner: mayank
+         group: mayank
+         mode: 0755
+        
+     - name: Build Images
+       docker_image: 
+         path: /home/mayank/build/
+         name: webimages

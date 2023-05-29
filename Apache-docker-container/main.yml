@@ -1,0 +1,16 @@
+---
+- name: Main script to Run all dependency
+  hosts: all
+  become: True
+
+- name: Include task
+  include_tasks: docker-installation-step-1.yml
+
+- name: Include task
+  include_tasks: docker-images-pull-step2.yml
+
+- name: Include task
+  include_tasks: docker-custmize-image-step3.yml
+
+- name: Include task
+  include_tasks: docker-container-creat-step4.yml

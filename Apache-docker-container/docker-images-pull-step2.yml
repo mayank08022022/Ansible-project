@@ -1,0 +1,15 @@
+---
+ - name: Docker images pull from registery
+   hosts: all
+   become: True
+  #  vars:
+  #    images_pull:
+  #      - centos
+   tasks:
+     - name: Pull
+       docker_image:
+         name: centos
+         tag: latest
+         source: pull
+       register: z
+       
