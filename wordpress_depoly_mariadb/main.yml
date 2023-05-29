@@ -1,0 +1,7 @@
+---
+- name: Wordpress Installlation by Ansible-playbook
+  hosts: all
+  become: True
+  roles:
+    - mariadb
+    - wordpress
