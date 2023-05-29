@@ -1,0 +1,21 @@
+---
+- name: Installation of terraform
+  hosts: all
+  become: True
+  tasks:
+    - name: Installation of dependency packages
+      yum:
+        name: "{{ item }}"
+        state: latest
+      loop:
+        - yum-utils
+
+    - name: Download the repo
+      get_url:
+        url: https://rpm.releases.hashicorp.com/RHEL/hashicorp.repo
+        dest: /etc/yum.repos.d
+        mode: '0644'
+    - name:
+      yum:
+        name: terraform
+        state: latest

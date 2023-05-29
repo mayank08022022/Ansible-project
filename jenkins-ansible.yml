@@ -1,0 +1,44 @@
+---
+ - name: Jenkin setup playbook
+   hosts: all
+   become: True
+   tasks:
+     - name: epel-release
+       yum:
+         name: epel-release
+         state: latest
+     - name: packages java installation
+       yum:
+         name: java-11-openjdk-devel
+         state: latest
+     - name: Repo Configuration
+       get_url:
+         url: https://pkg.jenkins.io/redhat-stable/jenkins.repo
+         dest: /etc/yum.repos.d/jenkins.repo
+     - name: Import jenkins key from url
+       ansible.builtin.rpm_key:
+         state: present
+         key: https://pkg.jenkins.io/redhat-stable/jenkins.io.key
+
+     - name: Dependency installation
+       command: "rpm --import https://pkg.jenkins.io/redhat-stable/jenkins.io-2023.key"
+    
+#     - name: Open Firewall Port
+#       firewalld:
+#         zone: public
+#         port: 8080/tcp
+#         permanent: true
+#         state: enabled
+#         immediate: true
+
+     - name: Install jenkin packages
+       yum:
+         name: jenkins
+         state: latest
+       notify:
+         - start jenkins
+   handlers:
+    - name: start jenkins
+      ansible.builtin.service:
+        name: jenkins
+        state: restarted
