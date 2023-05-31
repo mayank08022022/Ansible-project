@@ -1,0 +1,23 @@
+---
+- name: Aws-cli configuration with YML
+  hosts: all
+  become: True
+  tasks:
+    - name: Installa dependency packages
+      yum:
+        name: unzip
+        state: latest
+    - name: AWS-CLI Configuration
+      ansible.builtin.shell: curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+    - name: Working dir on hosts
+      shell: " pwd > text.txt "
+    - name: Unarchive a file that is already on the remote machine
+      ansible.builtin.unarchive:
+        src: /home/mayank/awscliv2.zip
+        dest: /home/mayank
+        remote_src: yes
+    - name: aws install command 
+      shell: /home/mayank/aws/install --update
+
+
+      
